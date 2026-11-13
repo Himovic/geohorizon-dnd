@@ -46,6 +46,8 @@ public static class SegyScanner
         foreach (var cand in SegyKeyLocations.Candidates)
         {
             var ils = new HashSet<int>(); var xls = new HashSet<int>(); var bins = new HashSet<long>();
+            var binOffsets = new Dictionary<long, HashSet<int>>();
+            int dupOffsets = 0;
             bool bad = false;
             for (int s = 0; s < sample; s++)
             {
@@ -54,16 +56,26 @@ public static class SegyScanner
                 try { il = file.ReadHeaderInt(t, cand.InlineByte, cand.InlineSize); xl = file.ReadHeaderInt(t, cand.CrosslineByte, cand.CrosslineSize); }
                 catch { bad = true; break; }
                 if (il < 0 || xl < 0 || il > 10_000_000 || xl > 10_000_000) { bad = true; break; }
-                ils.Add(il); xls.Add(xl); bins.Add(((long)il << 32) | (uint)xl);
+                long key = ((long)il << 32) | (uint)xl;
+                ils.Add(il); xls.Add(xl); bins.Add(key);
+                int off = file.ReadHeaderInt(t, cand.OffsetByte, 4);
+                if (!binOffsets.TryGetValue(key, out var set)) binOffsets[key] = set = [];
+                if (!set.Add(off)) dupOffsets++;
             }
             if (bad || bins.Count == 0) continue;
-            // A good key pair has many distinct bins relative to sampled traces and both axes varying,
-            // or (2D) a constant line with a varying CDP.
+            // A good key pair forms a well-filled regular grid (fill = bins / (nIl·nXl)) with many distinct bins.
+            // Trace sequence numbers (unique per trace) used as a key produce a sparse grid and are penalised.
             double distinctRatio = bins.Count / (double)sample;
             double grid = (double)ils.Count * xls.Count;
             double fill = grid > 0 ? bins.Count / grid : 0;
-            double score = distinctRatio * 2 + (ils.Count > 1 && xls.Count > 1 ? fill : 0) + (xls.Count > 1 ? 0.25 : 0);
+            double score = 2 * fill + 0.5 * distinctRatio + (xls.Count > 1 ? 0.25 : 0);
+            if (ils.Count == sample && sample > 10) score -= 1;
+            if (xls.Count == sample && sample > 10) score -= 1;
             if (ils.Count == 1 && ils.Contains(0) && xls.Count <= 1) score -= 5;
+            // Several traces in one bin with identical offsets indicates the wrong keys (e.g. (field record, channel) of gathers)
+            int extra = sample - bins.Count;
+            if (extra > 0) score -= 2.0 * dupOffsets / extra;
+            if (ReferenceEquals(cand, SegyKeyLocations.Candidates[0])) score += 0.1; // prefer the SEG-Y rev 1 standard on ties
             if (score > bestScore + 1e-9) { bestScore = score; best = cand; }
         }
         return best;

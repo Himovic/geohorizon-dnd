@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>GeoVisionPro.DataAccess</RootNamespace>
+    <Description>Project metadata persistence (SQLite via Entity Framework Core) and optional HDF5 exchange.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="PureHDF" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeoVisionPro.Domain\GeoVisionPro.Domain.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Application\GeoVisionPro.Application.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Seismic\GeoVisionPro.Seismic.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="GeoVisionPro.Tests" />
+  </ItemGroup>
+</Project>

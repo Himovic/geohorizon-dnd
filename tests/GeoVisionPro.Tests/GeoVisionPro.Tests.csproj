@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>GeoVisionPro.Tests</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\GeoVisionPro.Infrastructure\GeoVisionPro.Infrastructure.csproj" />
+  </ItemGroup>
+  <!-- Copy the native engine next to the tests when it has been built (CMake output), so native/managed parity tests run. -->
+  <ItemGroup>
+    <None Include="..\..\native\build\libgvnative.so" Condition="Exists('..\..\native\build\libgvnative.so')" CopyToOutputDirectory="PreserveNewest" Link="libgvnative.so" />
+    <None Include="..\..\native\build\Release\gvnative.dll" Condition="Exists('..\..\native\build\Release\gvnative.dll')" CopyToOutputDirectory="PreserveNewest" Link="gvnative.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+</Project>

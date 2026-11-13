@@ -6,6 +6,9 @@
   <ItemGroup>
     <ProjectReference Include="..\GeoVisionPro.Core\GeoVisionPro.Core.csproj" />
     <ProjectReference Include="..\GeoVisionPro.Domain\GeoVisionPro.Domain.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Visualization2D\GeoVisionPro.Visualization2D.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Interpretation\GeoVisionPro.Interpretation.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Seismic\GeoVisionPro.Seismic.csproj" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="GeoVisionPro.Tests" />

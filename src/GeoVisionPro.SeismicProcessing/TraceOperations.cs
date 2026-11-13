@@ -1,16 +1,15 @@
+using GeoVisionPro.Core.Parameters;
 using GeoVisionPro.Core.Numerics;
 
 namespace GeoVisionPro.SeismicProcessing;
 
 internal static class P
 {
-    public static ParameterDescriptor Num(string key, string label, double def, string unit = "", double min = double.NegativeInfinity, double max = double.PositiveInfinity, string desc = "") =>
-        new(key, label, ParameterKind.Number, def.ToString("R", System.Globalization.CultureInfo.InvariantCulture), unit, min, max, null, desc);
-    public static ParameterDescriptor Int(string key, string label, int def, string unit = "", double min = double.NegativeInfinity, double max = double.PositiveInfinity, string desc = "") =>
-        new(key, label, ParameterKind.Integer, def.ToString(System.Globalization.CultureInfo.InvariantCulture), unit, min, max, null, desc);
-    public static ParameterDescriptor Bool(string key, string label, bool def, string desc = "") => new(key, label, ParameterKind.Boolean, def.ToString(), Description: desc);
-    public static ParameterDescriptor Text(string key, string label, string def, string desc = "") => new(key, label, ParameterKind.Text, def, Description: desc);
-    public static ParameterDescriptor Choice(string key, string label, string def, string[] choices, string desc = "") => new(key, label, ParameterKind.Choice, def, Choices: choices, Description: desc);
+    public static ParameterDescriptor Num(string key, string label, double def, string unit = "", double min = double.NegativeInfinity, double max = double.PositiveInfinity, string desc = "") => Param.Num(key, label, def, unit, min, max, desc);
+    public static ParameterDescriptor Int(string key, string label, int def, string unit = "", double min = double.NegativeInfinity, double max = double.PositiveInfinity, string desc = "") => Param.Int(key, label, def, unit, min, max, desc);
+    public static ParameterDescriptor Bool(string key, string label, bool def, string desc = "") => Param.Bool(key, label, def, desc);
+    public static ParameterDescriptor Text(string key, string label, string def, string desc = "") => Param.Text(key, label, def, desc);
+    public static ParameterDescriptor Choice(string key, string label, string def, string[] choices, string desc = "") => Param.Choice(key, label, def, choices, desc);
 }
 
 public sealed class AmplitudeScaleOperation : TraceOperation

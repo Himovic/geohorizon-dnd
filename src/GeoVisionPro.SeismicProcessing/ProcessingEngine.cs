@@ -1,3 +1,4 @@
+using GeoVisionPro.Core.Parameters;
 using GeoVisionPro.Core.Primitives;
 using GeoVisionPro.Domain;
 using GeoVisionPro.Seismic.Segy;

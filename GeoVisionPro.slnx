@@ -1,0 +1,29 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/GeoVisionPro.Application/GeoVisionPro.Application.csproj" />
+    <Project Path="src/GeoVisionPro.Attributes/GeoVisionPro.Attributes.csproj" />
+    <Project Path="src/GeoVisionPro.AVO/GeoVisionPro.AVO.csproj" />
+    <Project Path="src/GeoVisionPro.Checkshot/GeoVisionPro.Checkshot.csproj" />
+    <Project Path="src/GeoVisionPro.Core/GeoVisionPro.Core.csproj" />
+    <Project Path="src/GeoVisionPro.Crossplot/GeoVisionPro.Crossplot.csproj" />
+    <Project Path="src/GeoVisionPro.DataAccess/GeoVisionPro.DataAccess.csproj" />
+    <Project Path="src/GeoVisionPro.Domain/GeoVisionPro.Domain.csproj" />
+    <Project Path="src/GeoVisionPro.GeologicalModeling/GeoVisionPro.GeologicalModeling.csproj" />
+    <Project Path="src/GeoVisionPro.Infrastructure/GeoVisionPro.Infrastructure.csproj" />
+    <Project Path="src/GeoVisionPro.Interpretation/GeoVisionPro.Interpretation.csproj" />
+    <Project Path="src/GeoVisionPro.Inversion/GeoVisionPro.Inversion.csproj" />
+    <Project Path="src/GeoVisionPro.NativeEngine/GeoVisionPro.NativeEngine.csproj" />
+    <Project Path="src/GeoVisionPro.Petrophysics/GeoVisionPro.Petrophysics.csproj" />
+    <Project Path="src/GeoVisionPro.Reporting/GeoVisionPro.Reporting.csproj" />
+    <Project Path="src/GeoVisionPro.RockPhysics/GeoVisionPro.RockPhysics.csproj" />
+    <Project Path="src/GeoVisionPro.Seismic/GeoVisionPro.Seismic.csproj" />
+    <Project Path="src/GeoVisionPro.SeismicProcessing/GeoVisionPro.SeismicProcessing.csproj" />
+    <Project Path="src/GeoVisionPro.Visualization2D/GeoVisionPro.Visualization2D.csproj" />
+    <Project Path="src/GeoVisionPro.Visualization3D/GeoVisionPro.Visualization3D.csproj" />
+    <Project Path="src/GeoVisionPro.WellLog/GeoVisionPro.WellLog.csproj" />
+    <Project Path="src/GeoVisionPro.WellTie/GeoVisionPro.WellTie.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GeoVisionPro.Tests/GeoVisionPro.Tests.csproj" />
+  </Folder>
+</Solution>

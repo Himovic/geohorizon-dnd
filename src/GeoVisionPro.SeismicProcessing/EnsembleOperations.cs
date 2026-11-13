@@ -1,3 +1,4 @@
+using GeoVisionPro.Core.Parameters;
 using System.Numerics;
 using GeoVisionPro.Core.Numerics;
 using GeoVisionPro.Core.Primitives;
@@ -106,28 +107,35 @@ public sealed class FxDeconvolutionOperation : EnsembleOperation
         if (ntr < 2 * L + 2) return;
         int win = Math.Clamp((int)Math.Round(p.GetDouble("window", 400) / 1000 / ctx.SampleInterval), 8, ns);
         int hop = Math.Max(1, win / 2);
-        var taper = Dsp.Hann(win);
+        var hann = Dsp.Hann(win);
         var output = new double[ntr * ns];
         var weight = new double[ns];
         int nfft = Fft.NextPowerOfTwo(win);
         double df = 1.0 / (nfft * ctx.SampleInterval);
         int kmin = Math.Max(1, (int)(p.GetDouble("fmin", 2) / df)), kmax = Math.Min(nfft / 2, (int)(p.GetDouble("fmax", 90) / df));
         double mu = p.GetDouble("mu", 1) / 100;
+        // Rectangular analysis windows; overlap-add synthesis with Hann blending weights (edges of the trace get full weight)
         for (int start = 0; start < ns; start += hop)
         {
             int len = Math.Min(win, ns - start);
+            bool first = start == 0, last = start + win >= ns;
             var specs = new Complex[ntr][];
             for (int r = 0; r < ntr; r++)
             {
                 var c = new Complex[nfft];
                 var row = data.Row(r);
-                for (int i = 0; i < len; i++) c[i] = row[start + i] * taper[i];
+                for (int i = 0; i < len; i++) c[i] = row[start + i];
                 Fft.ForwardInPlace(c);
                 specs[r] = c;
             }
             var s = new Complex[ntr];
-            for (int k = kmin; k <= kmax; k++)
+            for (int k = 0; k <= nfft / 2; k++)
             {
+                if (k < kmin || k > kmax)
+                {
+                    for (int r = 0; r < ntr; r++) { specs[r][k] = Complex.Zero; if (k > 0 && k < nfft / 2) specs[r][nfft - k] = Complex.Zero; }
+                    continue;
+                }
                 for (int r = 0; r < ntr; r++) s[r] = specs[r][k];
                 var pred = PredictBothWays(s, L, mu);
                 for (int r = 0; r < ntr; r++)
@@ -136,23 +144,32 @@ public sealed class FxDeconvolutionOperation : EnsembleOperation
                     if (k > 0 && k < nfft / 2) specs[r][nfft - k] = Complex.Conjugate(pred[r]);
                 }
             }
-            for (int k = 0; k <= nfft / 2; k++)
+            for (int i = 0; i < len; i++)
             {
-                if (k >= kmin && k <= kmax) continue;
-                for (int r = 0; r < ntr; r++) { specs[r][k] = Complex.Zero; if (k > 0 && k < nfft / 2) specs[r][nfft - k] = Complex.Zero; }
+                double w = hann.Length > 1 ? hann[Math.Min(i, hann.Length - 1)] : 1;
+                if (first && i < win / 2) w = 1;
+                if (last && i >= win / 2) w = 1;
+                w = Math.Max(w, 1e-3);
+                weight[start + i] += w;
             }
             for (int r = 0; r < ntr; r++)
             {
                 Fft.InverseInPlace(specs[r]);
-                for (int i = 0; i < len; i++) output[r * ns + start + i] += specs[r][i].Real * taper[i];
+                for (int i = 0; i < len; i++)
+                {
+                    double w = hann.Length > 1 ? hann[Math.Min(i, hann.Length - 1)] : 1;
+                    if (first && i < win / 2) w = 1;
+                    if (last && i >= win / 2) w = 1;
+                    w = Math.Max(w, 1e-3);
+                    output[r * ns + start + i] += specs[r][i].Real * w;
+                }
             }
-            for (int i = 0; i < len; i++) weight[start + i] += taper[i] * taper[i];
-            if (start + win >= ns) break;
+            if (last) break;
         }
         for (int r = 0; r < ntr; r++)
         {
             var row = data.Row(r);
-            for (int i = 0; i < ns; i++) row[i] = weight[i] > 1e-6 ? (float)(output[r * ns + i] / weight[i]) : row[i];
+            for (int i = 0; i < ns; i++) row[i] = weight[i] > 0 ? (float)(output[r * ns + i] / weight[i]) : row[i];
         }
     }
 

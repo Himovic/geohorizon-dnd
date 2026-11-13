@@ -149,7 +149,7 @@ public enum CurvatureType { MostPositive, MostNegative, Mean, Gaussian, Maximum,
 
 /// <summary>
 /// Horizon (surface) curvature attributes from a local quadratic fit z = ax² + by² + cxy + dx + ey + f on a 3×3
-/// neighbourhood (Roberts, 2001). Time horizons are converted to depth with z = t·v/2 (constant velocity).
+/// neighbourhood (Roberts, 2001), with a = ½∂²z/∂x², b = ½∂²z/∂y², c = ∂²z/∂x∂y, d = ∂z/∂x, e = ∂z/∂y from central differences. Time horizons are converted to depth with z = t·v/2 (constant velocity).
 /// x runs along crosslines (columns), y along inlines (rows). Curvatures in 1/m, dip in degrees.
 /// </summary>
 public static class HorizonCurvature
@@ -166,8 +166,8 @@ public static class HorizonCurvature
             {
                 double z1 = Z(i - 1, j - 1), z2 = Z(i - 1, j), z3 = Z(i - 1, j + 1), z4 = Z(i, j - 1), z5 = Z(i, j), z6 = Z(i, j + 1), z7 = Z(i + 1, j - 1), z8 = Z(i + 1, j), z9 = Z(i + 1, j + 1);
                 if (double.IsNaN(z1 + z2 + z3 + z4 + z5 + z6 + z7 + z8 + z9)) continue;
-                double a = (z1 + z3 + z4 + z6 + z7 + z9) / (12 * dx * dx) - (z2 + z5 + z8) / (6 * dx * dx);
-                double b = (z1 + z2 + z3 + z7 + z8 + z9) / (12 * dx * dx) - (z4 + z5 + z6) / (6 * dx * dx);
+                double a = (z1 + z3 + z4 + z6 + z7 + z9) / (6 * dx * dx) - (z2 + z5 + z8) / (3 * dx * dx);   // ½ ∂²z/∂x²
+                double b = (z1 + z2 + z3 + z7 + z8 + z9) / (6 * dx * dx) - (z4 + z5 + z6) / (3 * dx * dx);   // ½ ∂²z/∂y²
                 double c = (z3 + z7 - z1 - z9) / (4 * dx * dx);
                 double d = (z3 + z6 + z9 - z1 - z4 - z7) / (6 * dx);
                 double e = (z1 + z2 + z3 - z7 - z8 - z9) / (6 * dx);

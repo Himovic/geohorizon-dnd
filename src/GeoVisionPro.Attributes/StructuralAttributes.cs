@@ -23,30 +23,85 @@ public abstract class NeighborhoodAttribute : ISeismicAttribute
     }
 }
 
-/// <summary>Semblance-based coherence (Marfurt et al., 1998) over a 3×3 trace aperture without dip steering.</summary>
+/// <summary>
+/// Semblance-based coherence (Marfurt et al., 1998) over a 3×3 trace aperture. With dip steering (default) the local
+/// inline/crossline dips are estimated by the gradient structure tensor and neighbouring traces are sampled along the
+/// dipping plane, so that steeply dipping continuous reflectors are not mistaken for discontinuities.
+/// </summary>
 public sealed class CoherenceAttribute : NeighborhoodAttribute
 {
     public override string Id => "coherence";
     public override string DisplayName => "Coherence (semblance)";
-    public override string Description => "Σ_t(Σ_traces a)² / (N Σ_t Σ_traces a²) in a vertical window; 1 = laterally continuous, low values = discontinuities (faults, channels).";
-    public override IReadOnlyList<ParameterDescriptor> Parameters { get; } = [Param.Num("window", "Vertical window", 24, "ms", 2)];
+    public override string Description => "Σ_t(Σ_traces a)² / (N Σ_t Σ_traces a²) in a vertical window, optionally dip-steered; 1 = laterally continuous, low values = discontinuities (faults, channels).";
+    public override IReadOnlyList<ParameterDescriptor> Parameters { get; } = [Param.Num("window", "Vertical window", 24, "ms", 2), Param.Bool("dipSteered", "Dip steering", true)];
     public override void ComputeNeighborhood(float[]?[,] t, Span<float> y, ParameterSet p, double dt, double dxi, double dxc)
     {
-        var traces = Live(t).ToArray();
-        int n = y.Length, h = HalfWindow(p, dt), m = traces.Length;
-        var num = new double[n]; var den = new double[n];
-        for (int k = 0; k < n; k++)
-        {
-            double s = 0, s2 = 0;
-            foreach (var tr in traces) { double v = float.IsNaN(tr[k]) ? 0 : tr[k]; s += v; s2 += v * v; }
-            num[k] = s * s; den[k] = s2;
-        }
+        int n = y.Length, h = HalfWindow(p, dt);
+        var c = t[1, 1];
+        if (c is null) { y.Fill(1f); return; }
+        bool steer = p.GetBool("dipSteered", true);
+        var (px, py) = steer ? LocalDips(t, c, n, h) : (new double[n], new double[n]);
+        var offsets = new List<(float[] Tr, int Di, int Dj)>();
+        for (int a = 0; a < 3; a++) for (int b = 0; b < 3; b++) if (t[a, b] is { } tr) offsets.Add((tr, a - 1, b - 1));
+        int m = offsets.Count;
         for (int k = 0; k < n; k++)
         {
             double sn = 0, sd = 0;
-            for (int w = Math.Max(0, k - h); w <= Math.Min(n - 1, k + h); w++) { sn += num[w]; sd += den[w]; }
+            for (int w = Math.Max(0, k - h); w <= Math.Min(n - 1, k + h); w++)
+            {
+                double s = 0, s2 = 0;
+                foreach (var (tr, di, dj) in offsets)
+                {
+                    double idx = w + px[k] * di + py[k] * dj;
+                    float v = Core.Numerics.Dsp.SampleLinear(tr, idx);
+                    if (float.IsNaN(v)) v = 0;
+                    s += v; s2 += v * (double)v;
+                }
+                sn += s * s; sd += s2;
+            }
             y[k] = sd > 0 && m > 1 ? (float)(sn / (m * sd)) : 1f;
         }
+    }
+
+    /// <summary>
+    /// Local dips in samples per trace (inline and crossline) from the smoothed structure tensor, refined iteratively:
+    /// gradients are re-evaluated on neighbours aligned with the current estimate, removing the bias of finite
+    /// differences for large dips (phase shifts approaching a quarter period).
+    /// </summary>
+    internal static (double[] Px, double[] Py) LocalDips(float[]?[,] t, float[] c, int n, int h, int iterations = 3)
+    {
+        var px = new double[n]; var py = new double[n];
+        var gxgt = new double[n]; var gygt = new double[n]; var gtgt = new double[n];
+        int hw = Math.Max(h, 3);
+        for (int it = 0; it < iterations; it++)
+        {
+            for (int k = 0; k < n; k++)
+            {
+                double gx = AlignedGrad(t[2, 1], t[0, 1], c, k, px[k]);
+                double gy = AlignedGrad(t[1, 2], t[1, 0], c, k, py[k]);
+                double gt = (c[Math.Min(n - 1, k + 1)] - c[Math.Max(0, k - 1)]) / 2.0;
+                gxgt[k] = gx * gt; gygt[k] = gy * gt; gtgt[k] = gt * gt;
+            }
+            for (int k = 0; k < n; k++)
+            {
+                double a = 0, b = 0, d = 0;
+                for (int w = Math.Max(0, k - hw); w <= Math.Min(n - 1, k + hw); w++) { a += gxgt[w]; b += gygt[w]; d += gtgt[w]; }
+                if (d <= 0) continue;
+                px[k] = Math.Clamp(px[k] - a / d, -4, 4);
+                py[k] = Math.Clamp(py[k] - b / d, -4, 4);
+            }
+        }
+        return (px, py);
+    }
+
+    /// <summary>Lateral derivative of the residual wavefield after aligning neighbours with dip p (samples/trace).</summary>
+    private static double AlignedGrad(float[]? plus, float[]? minus, float[] centre, int k, double p)
+    {
+        float P(float[] tr, double idx) { var v = Core.Numerics.Dsp.SampleLinear(tr, idx); return float.IsNaN(v) ? centre[k] : v; }
+        if (plus is not null && minus is not null) return (P(plus, k + p) - P(minus, k - p)) / 2.0;
+        if (plus is not null) return P(plus, k + p) - centre[k];
+        if (minus is not null) return centre[k] - P(minus, k - p);
+        return 0;
     }
 }
 

@@ -96,7 +96,7 @@ public static class LogConditioning
 
     /// <summary>
     /// Depth matching of a curve to a reference by maximizing the cross-correlation over shifts within ±maxShift.
-    /// Returns the best shift (depth units) and the correlation coefficient.
+    /// Returns the shift to apply to <paramref name="curve"/> (with <see cref="DepthShift"/>) to match the reference, and the correlation coefficient.
     /// </summary>
     public static (double Shift, double Correlation) FindDepthShift(LogCurve reference, LogCurve curve, double maxShift, double step)
     {

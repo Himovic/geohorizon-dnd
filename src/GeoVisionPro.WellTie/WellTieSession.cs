@@ -219,9 +219,11 @@ public sealed class WellTieSession
         Name = $"Tie {Well.Name}", WellId = Well.Id, SeismicId = seismicId, WaveletId = waveletId,
         BulkShift = Parameters.BulkShift, PhaseRotation = Parameters.PhaseRotation, ReversePolarity = Parameters.ReversePolarity,
         Correlation = Quality?.Correlation ?? double.NaN,
-        ParametersJson = System.Text.Json.JsonSerializer.Serialize(Parameters)
+        ParametersJson = System.Text.Json.JsonSerializer.Serialize(Parameters, JsonOptions)
     };
 
     public static WellTieParameters ParametersFromJson(string json) =>
-        System.Text.Json.JsonSerializer.Deserialize<WellTieParameters>(json) ?? new WellTieParameters();
+        System.Text.Json.JsonSerializer.Deserialize<WellTieParameters>(json, JsonOptions) ?? new WellTieParameters();
+
+    private static readonly System.Text.Json.JsonSerializerOptions JsonOptions = new() { NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals };
 }

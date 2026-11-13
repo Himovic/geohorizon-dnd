@@ -74,12 +74,18 @@ public static class SyntheticSeismogram
         return r;
     }
 
-    /// <summary>Convolutional synthetic: s = r * w (wavelet centred), SEG normal polarity unless reversed.</summary>
+    /// <summary>
+    /// Convolutional synthetic: s = r * w (wavelet centred), SEG normal polarity unless reversed. The coefficient stored at
+    /// sample i+1 belongs to the interface between blocked samples i and i+1, i.e. at time t_i + Δt/2; the synthetic is
+    /// therefore advanced by half a sample (band-limited sinc interpolation) so events are not biased Δt/2 late.
+    /// </summary>
     public static SyntheticResult Generate(TimeLogs logs, Wavelet wavelet, bool reversePolarity = false)
     {
         var w = Math.Abs(wavelet.SampleInterval - logs.SampleInterval) > 1e-9 ? wavelet.Resample(logs.SampleInterval) : wavelet;
         var rc = Reflectivity(logs.Impedance);
-        var syn = Dsp.ConvolveSame(rc, w.Samples, w.CenterIndex);
+        var raw = Dsp.ConvolveSame(rc, w.Samples, w.CenterIndex);
+        var syn = new float[raw.Length];
+        for (int i = 0; i < raw.Length; i++) { var v = Dsp.SampleSinc(raw, i + 0.5); syn[i] = float.IsNaN(v) ? raw[i] : v; }
         if (reversePolarity) for (int i = 0; i < syn.Length; i++) syn[i] = -syn[i];
         return new SyntheticResult(logs, rc, syn, w);
     }

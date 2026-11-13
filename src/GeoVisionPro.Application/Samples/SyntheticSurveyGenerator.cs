@@ -75,19 +75,23 @@ public sealed class SyntheticSurveyGenerator
         double ci = Inlines * 0.5, cj = Crosslines * 0.42, s = Math.Min(Inlines, Crosslines) * 0.32;
         double dome = AnticlineAmplitude * Math.Exp(-((i - ci) * (i - ci) + (j - cj) * (j - cj)) / (2 * s * s));
         double dip = 0.0006 * i + 0.0003 * j;
-        double fault = j > FaultTrace(i) ? FaultThrow * (k + 1) / HorizonBaseTimes.Length : 0;
         double damp = 0.6 + 0.4 * k / Math.Max(1, HorizonBaseTimes.Length - 1);
-        return HorizonBaseTimes[k] - dome * damp + dip + fault;
+        double unfaulted = HorizonBaseTimes[k] - dome * damp + dip;
+        double fault = j > FaultPosition(i, unfaulted) ? FaultThrow * (k + 1) / HorizonBaseTimes.Length : 0;
+        return unfaulted + fault;
     }
 
     /// <summary>Fault trace position (crossline index) as a function of inline index: a slightly oblique planar fault.</summary>
     public double FaultTrace(double i) => Crosslines * 0.68 + 0.15 * (i - Inlines / 2.0);
 
+    /// <summary>Fault position (crossline index) at time t: the fault plane dips towards increasing crossline (6 bins per second).</summary>
+    public double FaultPosition(double i, double t) => FaultTrace(i) + 6 * (t - 0.3);
+
     private (int Layer, bool Gas) LayerAt(double t, double i, double j)
     {
         int layer = 0;
         for (int k = 0; k < HorizonBaseTimes.Length; k++) if (t >= HorizonTime(k, i, j)) layer = k + 1;
-        bool gas = layer == 3 && t < GasWaterContactTime && j <= FaultTrace(i);
+        bool gas = layer == 3 && t < GasWaterContactTime && j <= FaultPosition(i, t);
         return (layer, gas);
     }
 
@@ -114,12 +118,32 @@ public sealed class SyntheticSurveyGenerator
 
     public Wavelet Wavelet => Wavelet.Ricker(PeakFrequency, Dt, 0.2);
 
-    /// <summary>Noise-free post-stack trace (normal-incidence convolutional model, exact reflection coefficients).</summary>
+    /// <summary>
+    /// Noise-free post-stack trace (normal-incidence convolutional model). Reflection coefficients are computed on a
+    /// grid 8× finer than the output sampling and each one is placed at its exact (sub-sample) interface time by linear
+    /// weighting onto the two neighbouring output samples, so event times are not quantised to the sample grid.
+    /// </summary>
     public float[] CleanTrace(double i, double j)
     {
-        var z = ImpedanceTrace(i, j);
+        const int over = 8;
         var r = new float[Samples];
-        for (int k = 1; k < Samples; k++) r[k] = (z[k] - z[k - 1]) / (z[k] + z[k - 1]);
+        double zPrev = double.NaN;
+        for (int k = 0; k < Samples * over; k++)
+        {
+            double t = k * Dt / over;
+            var m = Properties(t, i, j, out var vp);
+            double z = vp * m.Rho;
+            if (!double.IsNaN(zPrev) && z != zPrev)
+            {
+                double rc = (z - zPrev) / (z + zPrev);
+                double pos = (k - 0.5) / over;           // interface between fine samples k-1 and k
+                int k0 = (int)Math.Floor(pos);
+                double f = pos - k0;
+                if (k0 >= 0 && k0 < Samples) r[k0] += (float)(rc * (1 - f));
+                if (k0 + 1 < Samples) r[k0 + 1] += (float)(rc * f);
+            }
+            zPrev = z;
+        }
         var w = Wavelet;
         return Dsp.ConvolveSame(r, w.Samples, w.CenterIndex);
     }
@@ -175,10 +199,24 @@ public sealed class SyntheticSurveyGenerator
         {
             var st = new FaultStick();
             for (double t = 0.3; t <= 1.25; t += 0.19)
-                st.Points.Add(new Point3D(FirstInline + i, FirstCrossline + FaultTrace(i) + (t - 0.3) * 6, t));
+                st.Points.Add(new Point3D(FirstInline + i, FirstCrossline + FaultPosition(i, t), t));
             f.Sticks.Add(st);
         }
         return f;
+    }
+
+    /// <summary>Exact model time-depth relation (TVDSS, TWT) at grid position (i, j), sampled every 0.2 ms.</summary>
+    public (double[] TvdSs, double[] Twt) TrueTimeDepth(double i, double j)
+    {
+        double fine = 0.0002, z = 0;
+        var tl = new List<double> { 0 }; var zl = new List<double> { 0 };
+        for (double t = fine; t <= Samples * Dt + 0.2; t += fine)
+        {
+            Properties(t - fine / 2, i, j, out var vp);
+            z += vp * fine / 2;
+            tl.Add(t); zl.Add(z);
+        }
+        return (zl.ToArray(), tl.ToArray());
     }
 
     /// <summary>

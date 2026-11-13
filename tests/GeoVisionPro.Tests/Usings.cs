@@ -1,0 +1,1 @@
+global using SyntheticSurveyGeneratorAlias = GeoVisionPro.Application.Samples.SyntheticSurveyGenerator;

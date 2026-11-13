@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>GeoVisionPro.Reporting</RootNamespace>
+    <Description>PDF, Excel (XLSX), CSV and ASCII reporting/export.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeoVisionPro.Core\GeoVisionPro.Core.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Domain\GeoVisionPro.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="GeoVisionPro.Tests" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>GeoVisionPro.Attributes</RootNamespace>
+    <Description>Seismic attribute engine: complex trace, amplitude, frequency, structural and spectral attributes.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeoVisionPro.Core\GeoVisionPro.Core.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Domain\GeoVisionPro.Domain.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Seismic\GeoVisionPro.Seismic.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="GeoVisionPro.Tests" />
+  </ItemGroup>
+</Project>

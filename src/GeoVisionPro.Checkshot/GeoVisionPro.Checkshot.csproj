@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>GeoVisionPro.Checkshot</RootNamespace>
+    <Description>Checkshot and time-depth calibration: velocities, sonic integration, drift correction, depth/time conversion.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeoVisionPro.Core\GeoVisionPro.Core.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Domain\GeoVisionPro.Domain.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.WellLog\GeoVisionPro.WellLog.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="GeoVisionPro.Tests" />
+  </ItemGroup>
+</Project>

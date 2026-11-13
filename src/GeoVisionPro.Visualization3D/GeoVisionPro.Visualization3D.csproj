@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>GeoVisionPro.Visualization3D</RootNamespace>
+    <Description>3D scene model: meshes for slices, horizons, faults, wells, transfer functions and camera.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeoVisionPro.Core\GeoVisionPro.Core.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Domain\GeoVisionPro.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="GeoVisionPro.Tests" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,11 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+TestResults/
+native/build/
+artifacts/
+*.gvp-journal
+*.db-shm
+*.db-wal

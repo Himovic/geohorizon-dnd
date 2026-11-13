@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>GeoVisionPro.WellTie</RootNamespace>
+    <Description>Synthetic seismograms, wavelet estimation and well-to-seismic tie.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeoVisionPro.Core\GeoVisionPro.Core.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Domain\GeoVisionPro.Domain.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.WellLog\GeoVisionPro.WellLog.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Checkshot\GeoVisionPro.Checkshot.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Seismic\GeoVisionPro.Seismic.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="GeoVisionPro.Tests" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>GeoVisionPro.Inversion</RootNamespace>
+    <Description>Post-stack and pre-stack seismic inversion: recursive, band-limited, model-based, sparse-spike, simultaneous.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeoVisionPro.Core\GeoVisionPro.Core.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Domain\GeoVisionPro.Domain.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Seismic\GeoVisionPro.Seismic.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.WellLog\GeoVisionPro.WellLog.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.Checkshot\GeoVisionPro.Checkshot.csproj" />
+    <ProjectReference Include="..\GeoVisionPro.WellTie\GeoVisionPro.WellTie.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="GeoVisionPro.Tests" />
+  </ItemGroup>
+</Project>

@@ -77,7 +77,7 @@ public sealed partial class ProcessingViewModel : DocumentViewModel
         var g = value.Geometry;
         PreviewMin = g.Inlines.First; PreviewMax = g.Inlines.Last;
         _previewPosition = g.Inlines.ValueAt(g.InlineCount / 2); OnPropertyChanged(nameof(PreviewPosition));
-        if (pre) foreach (var st in Steps.ToList()) { }
+        if (pre) foreach (var st in Steps.Where(st => !Operations.Any(o => o.Id == st.OperationId)).ToList()) Steps.Remove(st);
         OutputName = $"{value.Name} processed";
         _ = UpdatePreview();
     }

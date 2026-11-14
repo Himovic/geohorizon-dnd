@@ -227,7 +227,8 @@ public sealed partial class MainViewModel : ObservableObject
         if (!Session.IsOpen || !Session.IsDirty) return true;
         var r = Dialogs.YesNoCancel($"Save changes to '{Session.Project.Name}'?");
         if (r is null) return false;
-        if (r == true) Session.SaveAsync().GetAwaiter().GetResult();
+        // save on a pool thread: blocking the UI thread on an awaited UI continuation would deadlock
+        if (r == true) Task.Run(() => Session.SaveAsync()).GetAwaiter().GetResult();
         return true;
     }
 

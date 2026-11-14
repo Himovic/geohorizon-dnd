@@ -1,0 +1,17 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+  <!--
+    Windows installer (MSI) for GeoVision Pro, built with WiX Toolset v5 (Windows only).
+    Build: run build/build-release.ps1, which publishes the application to artifacts/publish and then builds this project.
+  -->
+  <PropertyGroup>
+    <OutputName>GeoVisionPro-$(ProductVersion)-x64</OutputName>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">0.8.0</ProductVersion>
+    <PublishDir Condition="'$(PublishDir)' == ''">..\artifacts\publish\</PublishDir>
+    <DefineConstants>ProductVersion=$(ProductVersion);PublishDir=$(PublishDir)</DefineConstants>
+    <Platform>x64</Platform>
+    <SuppressValidation>false</SuppressValidation>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.2" />
+  </ItemGroup>
+</Project>

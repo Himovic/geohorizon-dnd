@@ -1,0 +1,41 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="GeoVision Pro" Manufacturer="GeoVision Pro" Version="$(ProductVersion)" UpgradeCode="6F1C7D52-2B7E-4B7A-9A61-3E5C9B8F2D41" Scope="perMachine">
+    <MajorUpgrade DowngradeErrorMessage="A newer version of GeoVision Pro is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+    <Icon Id="AppIcon" SourceFile="..\src\GeoVisionPro.Desktop\Assets\geovision.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/Himovic/geohorizon-dnd" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="GeoVision Pro" />
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ProgramMenuDir" Name="GeoVision Pro" />
+    </StandardDirectory>
+
+    <Feature Id="Main" Title="GeoVision Pro" Level="1" ConfigurableDirectory="INSTALLFOLDER">
+      <!-- all published files (self-contained .NET 10 application, native engines, documentation) -->
+      <Files Include="$(PublishDir)**" Directory="INSTALLFOLDER" />
+      <ComponentRef Id="Shortcuts" />
+      <ComponentRef Id="FileAssociation" />
+    </Feature>
+
+    <Component Id="Shortcuts" Directory="ProgramMenuDir" Guid="B0E3F0B7-1E8E-4C9C-8F26-2A6D9C6A7E10">
+      <Shortcut Id="StartMenuShortcut" Name="GeoVision Pro" Description="Seismic interpretation and reservoir characterization"
+                Target="[INSTALLFOLDER]GeoVisionPro.exe" WorkingDirectory="INSTALLFOLDER" Icon="AppIcon" />
+      <RemoveFolder Id="RemoveProgramMenuDir" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\GeoVisionPro" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <!-- .gvp project files open with GeoVision Pro -->
+    <Component Id="FileAssociation" Directory="INSTALLFOLDER" Guid="5C2D0A5E-7F3B-4E0A-9C1D-6B7A8E9F0A21">
+      <RegistryValue Root="HKLM" Key="Software\Classes\.gvp" Value="GeoVisionPro.Project" Type="string" KeyPath="yes" />
+      <RegistryValue Root="HKLM" Key="Software\Classes\GeoVisionPro.Project" Value="GeoVision Pro Project" Type="string" />
+      <RegistryValue Root="HKLM" Key="Software\Classes\GeoVisionPro.Project\DefaultIcon" Value="[INSTALLFOLDER]GeoVisionPro.exe,0" Type="string" />
+      <RegistryValue Root="HKLM" Key="Software\Classes\GeoVisionPro.Project\shell\open\command" Value="&quot;[INSTALLFOLDER]GeoVisionPro.exe&quot; &quot;%1&quot;" Type="string" />
+    </Component>
+
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+  </Package>
+</Wix>

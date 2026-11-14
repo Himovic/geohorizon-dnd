@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  linux:
+    name: Libraries, native engine and tests (Linux)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Native engine (OpenMP)
+        run: |
+          cmake -S native/GeoVisionPro.NativeEngine -B native/build -DCMAKE_BUILD_TYPE=Release -DGV_WITH_VTK=OFF
+          cmake --build native/build -j
+          ctest --test-dir native/build --output-on-failure
+      - name: Build solution (WPF cross-compiled)
+        run: dotnet build GeoVisionPro.slnx -c Release
+      - name: Tests
+        run: dotnet test tests/GeoVisionPro.Tests -c Release --no-build --logger "trx;LogFileName=tests.trx"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-linux
+          path: tests/GeoVisionPro.Tests/TestResults
+
+  windows:
+    name: Desktop build, tests and installer (Windows)
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Release build, publish and MSI
+        shell: pwsh
+        run: ./build/build-release.ps1 -Version 0.8.${{ github.run_number }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: geovisionpro-installer
+          path: installer/bin/**/*.msi

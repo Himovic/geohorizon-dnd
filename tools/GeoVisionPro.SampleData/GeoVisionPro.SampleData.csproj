@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>GeoVisionPro.SampleData</RootNamespace>
+    <Description>Command-line generator of the synthetic validation dataset (SEG-Y, LAS, checkshots, tops, horizons, faults).</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\GeoVisionPro.Application\GeoVisionPro.Application.csproj" />
+  </ItemGroup>
+</Project>

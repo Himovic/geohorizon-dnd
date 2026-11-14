@@ -1,0 +1,42 @@
+<UserControl x:Class="GeoVisionPro.Desktop.Views.PetrophysicsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:GeoVisionPro.Desktop.Controls">
+    <Grid Background="{DynamicResource BackgroundBrush}">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="260"/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <ScrollViewer Background="{DynamicResource PanelBrush}" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="6">
+                <TextBlock Text="Well" Style="{StaticResource SectionHeader}"/>
+                <ComboBox ItemsSource="{Binding Wells}" SelectedItem="{Binding Well}" DisplayMemberPath="Name"/>
+                <DockPanel><TextBlock Text="Top MD" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding Top, UpdateSourceTrigger=LostFocus}"/></DockPanel>
+                <DockPanel><TextBlock Text="Base MD" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding Base, UpdateSourceTrigger=LostFocus}"/></DockPanel>
+                <TextBlock Text="Shale volume" Style="{StaticResource SectionHeader}"/>
+                <ComboBox ItemsSource="{Binding VshMethods}" SelectedItem="{Binding VshMethod}"/>
+                <DockPanel><TextBlock Text="GR clean (gAPI)" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding GrClean}"/></DockPanel>
+                <DockPanel><TextBlock Text="GR shale (gAPI)" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding GrShale}"/></DockPanel>
+                <TextBlock Text="Porosity" Style="{StaticResource SectionHeader}"/>
+                <ComboBox ItemsSource="{Binding PhiMethods}" SelectedItem="{Binding PhiMethod}"/>
+                <DockPanel><TextBlock Text="ρ matrix (g/cc)" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding RhoMatrix}"/></DockPanel>
+                <DockPanel><TextBlock Text="ρ fluid (g/cc)" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding RhoFluid}"/></DockPanel>
+                <DockPanel><TextBlock Text="ρ shale (g/cc)" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding RhoShale}"/></DockPanel>
+                <TextBlock Text="Saturation" Style="{StaticResource SectionHeader}"/>
+                <ComboBox ItemsSource="{Binding SwMethods}" SelectedItem="{Binding SwMethod}"/>
+                <DockPanel><TextBlock Text="Rw (ohm·m)" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding Rw}"/></DockPanel>
+                <DockPanel><TextBlock Text="Rsh (ohm·m)" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding Rsh}"/></DockPanel>
+                <DockPanel><TextBlock Text="a, m, n" Width="110" VerticalAlignment="Center"/>
+                    <UniformGrid Columns="3"><TextBox Text="{Binding A}"/><TextBox Text="{Binding M}"/><TextBox Text="{Binding N}"/></UniformGrid></DockPanel>
+                <TextBlock Text="Cut-offs (net pay)" Style="{StaticResource SectionHeader}"/>
+                <DockPanel><TextBlock Text="Vsh ≤" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding VshCut}"/></DockPanel>
+                <DockPanel><TextBlock Text="PHIE ≥" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding PhiCut}"/></DockPanel>
+                <DockPanel><TextBlock Text="SW ≤" Width="110" VerticalAlignment="Center"/><TextBox Text="{Binding SwCut}"/></DockPanel>
+                <Button Content="Evaluate and store curves" Style="{StaticResource AccentButton}" Command="{Binding EvaluateCommand}" Margin="2,8"/>
+            </StackPanel>
+        </ScrollViewer>
+        <DockPanel Grid.Column="1">
+            <TextBox DockPanel.Dock="Bottom" Height="96" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Summary, Mode=OneWay}" FontFamily="{StaticResource MonoFont}"/>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <c:WellLogControl x:Name="Logs"/>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
+</UserControl>

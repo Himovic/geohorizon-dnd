@@ -1,0 +1,57 @@
+<UserControl x:Class="GeoVisionPro.Desktop.Views.WellTieView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:GeoVisionPro.Desktop.Controls"
+             xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF">
+    <Grid Background="{DynamicResource BackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ScrollViewer Background="{DynamicResource PanelBrush}" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="6">
+                <TextBlock Text="Inputs" Style="{StaticResource SectionHeader}"/>
+                <TextBlock Text="Well" Style="{StaticResource Muted}"/>
+                <ComboBox ItemsSource="{Binding Wells}" SelectedItem="{Binding Well}" DisplayMemberPath="Name"/>
+                <TextBlock Text="Seismic" Style="{StaticResource Muted}"/>
+                <ComboBox ItemsSource="{Binding Volumes}" SelectedItem="{Binding Seismic}" DisplayMemberPath="Name"/>
+                <TextBlock Text="Wavelet" Style="{StaticResource SectionHeader}"/>
+                <ComboBox ItemsSource="{Binding WaveletSources}" SelectedItem="{Binding WaveletSource}"/>
+                <DockPanel><TextBlock Text="Ricker Hz" Width="90" VerticalAlignment="Center"/><TextBox Text="{Binding RickerFrequency, UpdateSourceTrigger=LostFocus}"/></DockPanel>
+                <DockPanel><TextBlock Text="Length ms" Width="90" VerticalAlignment="Center"/><TextBox Text="{Binding WaveletLengthMs, UpdateSourceTrigger=LostFocus}"/></DockPanel>
+                <ComboBox ItemsSource="{Binding ProjectWavelets}" SelectedItem="{Binding ProjectWavelet}" DisplayMemberPath="Name" ToolTip="Project wavelet"/>
+                <Button Content="Re-extract wavelet" Command="{Binding ReExtractCommand}"/>
+                <TextBlock Text="Tie adjustments" Style="{StaticResource SectionHeader}"/>
+                <DockPanel><TextBlock Text="Bulk shift ms" Width="90" VerticalAlignment="Center"/><TextBox Text="{Binding BulkShiftMs, UpdateSourceTrigger=LostFocus}"/></DockPanel>
+                <Slider Minimum="-100" Maximum="100" Value="{Binding BulkShiftMs, Delay=200}" SmallChange="1"/>
+                <DockPanel><TextBlock Text="Phase °" Width="90" VerticalAlignment="Center"/><TextBox Text="{Binding Phase, UpdateSourceTrigger=LostFocus}"/></DockPanel>
+                <Slider Minimum="-180" Maximum="180" Value="{Binding Phase, Delay=200}"/>
+                <CheckBox Content="Reverse polarity" IsChecked="{Binding ReversePolarity}"/>
+                <DockPanel><TextBlock Text="Trace radius" Width="90" VerticalAlignment="Center"/><TextBox Text="{Binding TraceRadius, UpdateSourceTrigger=LostFocus}"/></DockPanel>
+                <DockPanel><TextBlock Text="Window from ms" Width="90" VerticalAlignment="Center"/><TextBox Text="{Binding WindowStartMs, UpdateSourceTrigger=LostFocus}"/></DockPanel>
+                <DockPanel><TextBlock Text="Window to ms" Width="90" VerticalAlignment="Center"/><TextBox Text="{Binding WindowEndMs, UpdateSourceTrigger=LostFocus}"/></DockPanel>
+                <UniformGrid Columns="2">
+                    <Button Content="Optimise shift" Command="{Binding OptimizeShiftCommand}"/>
+                    <Button Content="Optimise phase" Command="{Binding OptimizePhaseCommand}"/>
+                    <Button Content="Stretch/squeeze" Command="{Binding StretchSqueezeCommand}"/>
+                    <Button Content="Clear stretch" Command="{Binding ClearStretchCommand}"/>
+                </UniformGrid>
+                <TextBlock Text="Save" Style="{StaticResource SectionHeader}"/>
+                <CheckBox Content="Activate tied TDR for the well" IsChecked="{Binding ActivateTdr}"/>
+                <Button Content="Save tie" Style="{StaticResource AccentButton}" Command="{Binding SaveTieCommand}"/>
+                <Button Content="Save wavelet to project" Command="{Binding SaveWaveletCommand}"/>
+            </StackPanel>
+        </ScrollViewer>
+        <DockPanel Grid.Column="1">
+            <TextBlock DockPanel.Dock="Top" Text="{Binding Quality}" Margin="6,4" TextWrapping="Wrap" FontWeight="SemiBold"/>
+            <Grid DockPanel.Dock="Right" Width="300">
+                <Grid.RowDefinitions><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                <sp:WpfPlot x:Name="WaveletPlot"/>
+                <sp:WpfPlot x:Name="XcorrPlot" Grid.Row="1"/>
+            </Grid>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <c:TimeTracksControl x:Name="Tracks"/>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
+</UserControl>

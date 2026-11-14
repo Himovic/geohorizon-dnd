@@ -1,0 +1,22 @@
+<UserControl x:Class="GeoVisionPro.Desktop.Views.HistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel Background="{DynamicResource BackgroundBrush}">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Background="{DynamicResource SecondaryBackgroundBrush}">
+            <Button Content="Export (XLSX/CSV)" Command="{Binding ExportXlsxCommand}"/>
+        </StackPanel>
+        <TextBox DockPanel.Dock="Bottom" Height="110" IsReadOnly="True" TextWrapping="Wrap" FontFamily="{StaticResource MonoFont}" Text="{Binding Selected.ParametersJson, Mode=OneWay}"/>
+        <DataGrid ItemsSource="{Binding Records}" SelectedItem="{Binding Selected}" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Started (UTC)" Binding="{Binding StartedUtc, StringFormat=yyyy-MM-dd HH:mm:ss}"/>
+                <DataGridTextColumn Header="Operation" Binding="{Binding Operation}" Width="2*"/>
+                <DataGridTextColumn Header="Version" Binding="{Binding AlgorithmVersion}"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+                <DataGridTextColumn Header="Finished" Binding="{Binding FinishedUtc, StringFormat=HH:mm:ss}"/>
+                <DataGridTextColumn Header="Inputs" Binding="{Binding InputIds}" Width="*"/>
+                <DataGridTextColumn Header="Outputs" Binding="{Binding OutputIds}" Width="*"/>
+                <DataGridTextColumn Header="Messages" Binding="{Binding Messages}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

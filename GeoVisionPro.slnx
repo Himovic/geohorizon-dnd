@@ -7,6 +7,7 @@
     <Project Path="src/GeoVisionPro.Core/GeoVisionPro.Core.csproj" />
     <Project Path="src/GeoVisionPro.Crossplot/GeoVisionPro.Crossplot.csproj" />
     <Project Path="src/GeoVisionPro.DataAccess/GeoVisionPro.DataAccess.csproj" />
+    <Project Path="src/GeoVisionPro.Desktop/GeoVisionPro.Desktop.csproj" />
     <Project Path="src/GeoVisionPro.Domain/GeoVisionPro.Domain.csproj" />
     <Project Path="src/GeoVisionPro.GeologicalModeling/GeoVisionPro.GeologicalModeling.csproj" />
     <Project Path="src/GeoVisionPro.Infrastructure/GeoVisionPro.Infrastructure.csproj" />

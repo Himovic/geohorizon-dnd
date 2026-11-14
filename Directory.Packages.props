@@ -8,7 +8,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.15" />
     <PackageVersion Include="Dirkster.AvalonDock" Version="5.0.2" />
     <PackageVersion Include="Dirkster.AvalonDock.Themes.VS2013" Version="5.0.2" />
-    <PackageVersion Include="HelixToolkit.Wpf.SharpDX" Version="2.27.3" />
+    <PackageVersion Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.27.3" />
     <PackageVersion Include="ScottPlot.WPF" Version="5.1.59" />
     <PackageVersion Include="PureHDF" Version="2.1.4" />
     <PackageVersion Include="xunit" Version="2.9.3" />

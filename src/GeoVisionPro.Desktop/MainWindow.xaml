@@ -1,0 +1,249 @@
+<Window x:Class="GeoVisionPro.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ad="https://github.com/Dirkster99/AvalonDock"
+        xmlns:adt="clr-namespace:AvalonDock.Themes;assembly=AvalonDock.Themes.VS2013"
+        xmlns:v="clr-namespace:GeoVisionPro.Desktop.Views"
+        xmlns:local="clr-namespace:GeoVisionPro.Desktop"
+        Title="{Binding WindowTitle}" Width="1600" Height="980" WindowState="Maximized"
+        Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}"
+        FontFamily="{StaticResource UiFont}" FontSize="12.5" Icon="Assets/geovision.png" AllowDrop="True">
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+N" Command="{Binding NewProjectCommand}"/>
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenProjectCommand}"/>
+        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveProjectCommand}"/>
+        <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}"/>
+        <KeyBinding Gesture="Ctrl+Y" Command="{Binding RedoCommand}"/>
+        <KeyBinding Gesture="Ctrl+I" Command="{Binding ImportSegyCommand}"/>
+        <KeyBinding Gesture="Ctrl+L" Command="{Binding ImportLasCommand}"/>
+        <KeyBinding Gesture="F5" Command="{Binding OpenInlineCommand}"/>
+        <KeyBinding Gesture="F6" Command="{Binding OpenCrosslineCommand}"/>
+        <KeyBinding Gesture="F7" Command="{Binding OpenTimeSliceCommand}"/>
+        <KeyBinding Gesture="F8" Command="{Binding OpenMapCommand}"/>
+        <KeyBinding Gesture="F9" Command="{Binding Open3DCommand}"/>
+        <KeyBinding Gesture="Ctrl+T" Command="{Binding ToggleThemeCommand}"/>
+    </Window.InputBindings>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Padding="2">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New Project..." Command="{Binding NewProjectCommand}" InputGestureText="Ctrl+N"/>
+                <MenuItem Header="_Open Project..." Command="{Binding OpenProjectCommand}" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="Recent Projects" ItemsSource="{Binding RecentProjects}">
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                            <Setter Property="Header" Value="{Binding}"/>
+                            <Setter Property="Command" Value="{Binding DataContext.OpenRecentCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                            <Setter Property="CommandParameter" Value="{Binding}"/>
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
+                </MenuItem>
+                <MenuItem Header="_Save Project" Command="{Binding SaveProjectCommand}" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Save Project _As..." Command="{Binding SaveProjectAsCommand}"/>
+                <MenuItem Header="_Close Project" Command="{Binding CloseProjectCommand}"/>
+                <Separator/>
+                <MenuItem Header="Create Synthetic Sample Project..." Command="{Binding CreateSampleProjectCommand}"/>
+                <Separator/>
+                <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_Project">
+                <MenuItem Header="Project Settings (Properties)" Command="{Binding OpenProjectSettingsCommand}"/>
+                <MenuItem Header="Processing History" Command="{Binding OpenHistoryCommand}"/>
+                <MenuItem Header="Save Workspace Layout" Command="{Binding SaveWorkspaceCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_Data">
+                <MenuItem Header="Import SEG-Y..." Command="{Binding ImportSegyCommand}" InputGestureText="Ctrl+I"/>
+                <MenuItem Header="Import LAS Wells..." Command="{Binding ImportLasCommand}" InputGestureText="Ctrl+L"/>
+                <MenuItem Header="Import Well Tops (CSV/ASCII)..." Command="{Binding ImportTopsCommand}"/>
+                <MenuItem Header="Import Deviation Survey..." Command="{Binding ImportDeviationCommand}"/>
+                <MenuItem Header="Import Checkshots..." Command="{Binding ImportCheckshotsCommand}"/>
+                <MenuItem Header="Import Horizon (XYZ / ZMAP+)..." Command="{Binding ImportHorizonCommand}"/>
+                <MenuItem Header="Import Fault Sticks..." Command="{Binding ImportFaultCommand}"/>
+                <Separator/>
+                <MenuItem Header="Export Selected (SEG-Y / LAS / XYZ / ZMAP)..." Command="{Binding ExportSelectedCommand}"/>
+                <MenuItem Header="Export Selected to HDF5..." Command="{Binding ExportHdf5Command}"/>
+            </MenuItem>
+            <MenuItem Header="_Seismic">
+                <MenuItem Header="Inline Viewer" Command="{Binding OpenInlineCommand}" InputGestureText="F5"/>
+                <MenuItem Header="Crossline Viewer" Command="{Binding OpenCrosslineCommand}" InputGestureText="F6"/>
+                <MenuItem Header="Time Slice" Command="{Binding OpenTimeSliceCommand}" InputGestureText="F7"/>
+                <MenuItem Header="Base Map / Arbitrary Line" Command="{Binding OpenMapCommand}" InputGestureText="F8"/>
+                <MenuItem Header="Pre-stack Gathers" Command="{Binding OpenGathersCommand}"/>
+                <MenuItem Header="3D View" Command="{Binding Open3DCommand}" InputGestureText="F9"/>
+                <MenuItem Header="Volume Rendering (VTK)" Command="{Binding OpenVtkVolumeCommand}"/>
+            </MenuItem>
+            <MenuItem Header="P_rocessing">
+                <MenuItem Header="Processing Sequence..." Command="{Binding OpenProcessingCommand}"/>
+                <MenuItem Header="Velocity Analysis / NMO / Stack" Command="{Binding OpenVelocityAnalysisCommand}"/>
+                <MenuItem Header="Workflow Manager" Command="{Binding OpenWorkflowCommand}"/>
+                <MenuItem Header="Processing History" Command="{Binding OpenHistoryCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_Interpretation">
+                <MenuItem Header="New Horizon..." Command="{Binding NewHorizonCommand}"/>
+                <MenuItem Header="New Fault..." Command="{Binding NewFaultCommand}"/>
+                <Separator/>
+                <MenuItem Header="Undo" Command="{Binding UndoCommand}" InputGestureText="Ctrl+Z"/>
+                <MenuItem Header="Redo" Command="{Binding RedoCommand}" InputGestureText="Ctrl+Y"/>
+            </MenuItem>
+            <MenuItem Header="_Wells">
+                <MenuItem Header="Well Logs / Correlation" Command="{Binding OpenWellLogsCommand}"/>
+                <MenuItem Header="Checkshots and Time-Depth" Command="{Binding OpenCheckshotsCommand}"/>
+                <MenuItem Header="Well-to-Seismic Tie" Command="{Binding OpenWellTieCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_Attributes"><MenuItem Header="Seismic Attributes..." Command="{Binding OpenAttributesCommand}"/></MenuItem>
+            <MenuItem Header="In_version"><MenuItem Header="Inversion Workflow..." Command="{Binding OpenInversionCommand}"/></MenuItem>
+            <MenuItem Header="A_VO/AVA"><MenuItem Header="AVO Analysis and Modelling..." Command="{Binding OpenAvoCommand}"/></MenuItem>
+            <MenuItem Header="_Crossplot"><MenuItem Header="New Crossplot..." Command="{Binding OpenCrossplotCommand}"/></MenuItem>
+            <MenuItem Header="Rock _Physics"><MenuItem Header="Fluid Substitution and Templates..." Command="{Binding OpenRockPhysicsCommand}"/></MenuItem>
+            <MenuItem Header="P_etrophysics"><MenuItem Header="Well Evaluation..." Command="{Binding OpenPetrophysicsCommand}"/></MenuItem>
+            <MenuItem Header="_Geological Modeling"><MenuItem Header="Framework, Grid and Properties..." Command="{Binding OpenGeoModelCommand}"/></MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="Toggle Dark/Light Theme" Command="{Binding ToggleThemeCommand}" InputGestureText="Ctrl+T"/>
+                <MenuItem Header="Show Project Explorer" Click="ShowPane_Click" Tag="explorer"/>
+                <MenuItem Header="Show Data Manager" Click="ShowPane_Click" Tag="data"/>
+                <MenuItem Header="Show Properties" Click="ShowPane_Click" Tag="properties"/>
+                <MenuItem Header="Show Interpretation Controls" Click="ShowPane_Click" Tag="interpretation"/>
+                <MenuItem Header="Show Messages" Click="ShowPane_Click" Tag="messages"/>
+                <MenuItem Header="Show Background Tasks" Click="ShowPane_Click" Tag="tasks"/>
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="Report Generator..." Command="{Binding OpenReportCommand}"/>
+                <MenuItem Header="Open Log Folder" Command="{Binding OpenLogFolderCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_Window" ItemsSource="{Binding Documents}">
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                        <Setter Property="Header" Value="{Binding Title}"/>
+                        <Setter Property="Command" Value="{Binding DataContext.ActivateDocumentCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <Setter Property="CommandParameter" Value="{Binding}"/>
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="User Guide" Command="{Binding OpenDocumentationCommand}"/>
+                <MenuItem Header="About GeoVision Pro" Command="{Binding AboutCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Ribbon -->
+        <TabControl DockPanel.Dock="Top" Background="{DynamicResource SecondaryBackgroundBrush}" BorderThickness="0,0,0,1" Height="96">
+            <TabItem Header="Home">
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE8A5;" Content="New" Command="{Binding NewProjectCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE838;" Content="Open" Command="{Binding OpenProjectCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE74E;" Content="Save" Command="{Binding SaveProjectCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE9D9;" Content="Sample&#x0a;project" Command="{Binding CreateSampleProjectCommand}"/>
+                    <Border Width="1" Margin="6,8" Background="{DynamicResource BorderBrush}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE8B5;" Content="SEG-Y" Command="{Binding ImportSegyCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE81D;" Content="LAS" Command="{Binding ImportLasCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE879;" Content="Horizon" Command="{Binding ImportHorizonCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xEDE1;" Content="Export" Command="{Binding ExportSelectedCommand}"/>
+                    <Border Width="1" Margin="6,8" Background="{DynamicResource BorderBrush}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE7A7;" Content="Undo" Command="{Binding UndoCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE7A6;" Content="Redo" Command="{Binding RedoCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE793;" Content="Theme" Command="{Binding ToggleThemeCommand}"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Seismic">
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE80A;" Content="Inline" Command="{Binding OpenInlineCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE8FD;" Content="Crossline" Command="{Binding OpenCrosslineCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE81E;" Content="Time slice" Command="{Binding OpenTimeSliceCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE707;" Content="Map /&#x0a;arbitrary" Command="{Binding OpenMapCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE8A9;" Content="Gathers" Command="{Binding OpenGathersCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xF158;" Content="3D view" Command="{Binding Open3DCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE7B8;" Content="Volume&#x0a;(VTK)" Command="{Binding OpenVtkVolumeCommand}"/>
+                    <Border Width="1" Margin="6,8" Background="{DynamicResource BorderBrush}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE9F5;" Content="Processing" Command="{Binding OpenProcessingCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE9D2;" Content="Velocity&#x0a;analysis" Command="{Binding OpenVelocityAnalysisCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE8F1;" Content="Workflows" Command="{Binding OpenWorkflowCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE81C;" Content="History" Command="{Binding OpenHistoryCommand}"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Interpretation">
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE879;" Content="New&#x0a;horizon" Command="{Binding NewHorizonCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE8B9;" Content="New fault" Command="{Binding NewFaultCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE9D9;" Content="Attributes" Command="{Binding OpenAttributesCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE707;" Content="Horizon&#x0a;maps" Command="{Binding OpenMapCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xF158;" Content="3D view" Command="{Binding Open3DCommand}"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Wells">
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE81D;" Content="Well logs" Command="{Binding OpenWellLogsCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE916;" Content="Checkshots" Command="{Binding OpenCheckshotsCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE71B;" Content="Well tie" Command="{Binding OpenWellTieCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE9F9;" Content="Petro-&#x0a;physics" Command="{Binding OpenPetrophysicsCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE945;" Content="Rock&#x0a;physics" Command="{Binding OpenRockPhysicsCommand}"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Reservoir">
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE8EF;" Content="Inversion" Command="{Binding OpenInversionCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE9D2;" Content="AVO / AVA" Command="{Binding OpenAvoCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE95E;" Content="Crossplot" Command="{Binding OpenCrossplotCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE81E;" Content="Geological&#x0a;model" Command="{Binding OpenGeoModelCommand}"/>
+                    <Button Style="{StaticResource RibbonButton}" Tag="&#xE8A5;" Content="Report" Command="{Binding OpenReportCommand}"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem><TextBlock Text="{Binding StatusText}" MaxWidth="520" TextTrimming="CharacterEllipsis"/></StatusBarItem>
+            <Separator/>
+            <StatusBarItem><TextBlock Text="{Binding CursorText}" FontFamily="{StaticResource MonoFont}"/></StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding TaskList.Summary}" Margin="0,0,12,0"/>
+                    <TextBlock Text="{Binding MemoryText}" Margin="0,0,12,0"/>
+                    <TextBlock Text="{Binding EngineStatus}"/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+
+        <ad:DockingManager x:Name="Dock" DocumentsSource="{Binding Documents}" AllowMixedOrientation="True">
+            <ad:DockingManager.Theme>
+                <adt:Vs2013DarkTheme/>
+            </ad:DockingManager.Theme>
+            <ad:LayoutRoot>
+                <ad:LayoutPanel Orientation="Vertical">
+                    <ad:LayoutPanel Orientation="Horizontal">
+                        <ad:LayoutAnchorablePaneGroup DockWidth="290" Orientation="Vertical">
+                            <ad:LayoutAnchorablePane>
+                                <ad:LayoutAnchorable Title="Project Explorer" ContentId="explorer" CanClose="False">
+                                    <v:ProjectExplorerView x:Name="ExplorerPane"/>
+                                </ad:LayoutAnchorable>
+                                <ad:LayoutAnchorable Title="Data Manager" ContentId="data">
+                                    <v:DataManagerView x:Name="DataPane"/>
+                                </ad:LayoutAnchorable>
+                            </ad:LayoutAnchorablePane>
+                        </ad:LayoutAnchorablePaneGroup>
+                        <ad:LayoutDocumentPaneGroup>
+                            <ad:LayoutDocumentPane/>
+                        </ad:LayoutDocumentPaneGroup>
+                        <ad:LayoutAnchorablePaneGroup DockWidth="310" Orientation="Vertical">
+                            <ad:LayoutAnchorablePane>
+                                <ad:LayoutAnchorable Title="Properties" ContentId="properties">
+                                    <v:PropertiesView x:Name="PropertiesPane"/>
+                                </ad:LayoutAnchorable>
+                                <ad:LayoutAnchorable Title="Interpretation" ContentId="interpretation">
+                                    <v:InterpretationControlsView x:Name="InterpretationPane"/>
+                                </ad:LayoutAnchorable>
+                            </ad:LayoutAnchorablePane>
+                        </ad:LayoutAnchorablePaneGroup>
+                    </ad:LayoutPanel>
+                    <ad:LayoutAnchorablePaneGroup DockHeight="170">
+                        <ad:LayoutAnchorablePane>
+                            <ad:LayoutAnchorable Title="Messages" ContentId="messages">
+                                <v:MessagesView x:Name="MessagesPane"/>
+                            </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="Background Tasks" ContentId="tasks">
+                                <v:TasksView x:Name="TasksPane"/>
+                            </ad:LayoutAnchorable>
+                        </ad:LayoutAnchorablePane>
+                    </ad:LayoutAnchorablePaneGroup>
+                </ad:LayoutPanel>
+            </ad:LayoutRoot>
+        </ad:DockingManager>
+    </DockPanel>
+</Window>

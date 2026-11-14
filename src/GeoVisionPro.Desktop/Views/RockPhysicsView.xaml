@@ -1,0 +1,30 @@
+<UserControl x:Class="GeoVisionPro.Desktop.Views.RockPhysicsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF">
+    <Grid Background="{DynamicResource BackgroundBrush}">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="260"/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <ScrollViewer Background="{DynamicResource PanelBrush}" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="6">
+                <TextBlock Text="Well" Style="{StaticResource SectionHeader}"/>
+                <ComboBox ItemsSource="{Binding Wells}" SelectedItem="{Binding Well}" DisplayMemberPath="Name"/>
+                <TextBlock Text="Fluids (Batzle-Wang brine)" Style="{StaticResource SectionHeader}"/>
+                <DockPanel><TextBlock Text="Temperature °C" Width="120" VerticalAlignment="Center"/><TextBox Text="{Binding Temperature}"/></DockPanel>
+                <DockPanel><TextBlock Text="Pressure MPa" Width="120" VerticalAlignment="Center"/><TextBox Text="{Binding Pressure}"/></DockPanel>
+                <DockPanel><TextBlock Text="Salinity ppm" Width="120" VerticalAlignment="Center"/><TextBox Text="{Binding Salinity}"/></DockPanel>
+                <TextBlock Text="Gassmann substitution" Style="{StaticResource SectionHeader}"/>
+                <DockPanel><TextBlock Text="Target fluid" Width="120" VerticalAlignment="Center"/><ComboBox ItemsSource="{Binding Fluids}" SelectedItem="{Binding TargetFluid}"/></DockPanel>
+                <DockPanel><TextBlock Text="Target Sw" Width="120" VerticalAlignment="Center"/><TextBox Text="{Binding TargetSw}"/></DockPanel>
+                <Button Content="Substitute and store curves" Style="{StaticResource AccentButton}" Command="{Binding SubstituteCommand}"/>
+                <TextBlock Text="Model templates" Style="{StaticResource SectionHeader}"/>
+                <DockPanel><TextBlock Text="Clay fraction" Width="120" VerticalAlignment="Center"/><TextBox Text="{Binding ClayFraction}"/></DockPanel>
+                <DockPanel><TextBlock Text="Critical porosity" Width="120" VerticalAlignment="Center"/><TextBox Text="{Binding CriticalPorosity}"/></DockPanel>
+                <DockPanel><TextBlock Text="Coordination no." Width="120" VerticalAlignment="Center"/><TextBox Text="{Binding Coordination}"/></DockPanel>
+                <DockPanel><TextBlock Text="Eff. pressure MPa" Width="120" VerticalAlignment="Center"/><TextBox Text="{Binding EffPressure}"/></DockPanel>
+                <Button Content="Update plot" Command="{Binding RefreshCommand}"/>
+                <TextBlock Text="{Binding Report}" TextWrapping="Wrap" Margin="0,8" Style="{StaticResource Muted}"/>
+            </StackPanel>
+        </ScrollViewer>
+        <sp:WpfPlot x:Name="Plot" Grid.Column="1"/>
+    </Grid>
+</UserControl>

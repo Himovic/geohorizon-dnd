@@ -1,0 +1,28 @@
+<UserControl x:Class="GeoVisionPro.Desktop.Views.InterpretationControlsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer Background="{DynamicResource PanelBrush}" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="6">
+            <TextBlock Text="Active horizon" Style="{StaticResource SectionHeader}"/>
+            <ComboBox ItemsSource="{Binding Horizons}" SelectedItem="{Binding ActiveHorizon}" DisplayMemberPath="Name"/>
+            <TextBlock Text="Active fault" Style="{StaticResource SectionHeader}"/>
+            <ComboBox ItemsSource="{Binding Faults}" SelectedItem="{Binding ActiveFault}" DisplayMemberPath="Name"/>
+            <TextBlock Text="Picking / tracking" Style="{StaticResource SectionHeader}"/>
+            <DockPanel><TextBlock Text="Snap to" Width="100" VerticalAlignment="Center"/><ComboBox ItemsSource="{Binding EventTypes}" SelectedItem="{Binding SnapEvent}"/></DockPanel>
+            <DockPanel><TextBlock Text="Search window" Width="100" VerticalAlignment="Center"/><TextBox Text="{Binding SnapWindow}"/></DockPanel>
+            <DockPanel><TextBlock Text="Min correlation" Width="100" VerticalAlignment="Center"/><TextBox Text="{Binding MinCorrelation}"/></DockPanel>
+            <DockPanel><TextBlock Text="Max jump" Width="100" VerticalAlignment="Center"/><TextBox Text="{Binding MaxJump}"/></DockPanel>
+            <CheckBox Content="Overwrite existing picks" IsChecked="{Binding Overwrite}"/>
+            <TextBlock Text="Horizon operations" Style="{StaticResource SectionHeader}"/>
+            <UniformGrid Columns="2">
+                <Button Content="Fill (Laplace)" Command="{Binding InterpolateCommand}" CommandParameter="Laplace"/>
+                <Button Content="Fill (min. curv.)" Command="{Binding InterpolateCommand}" CommandParameter="MinimumCurvature"/>
+                <Button Content="Fill (IDW)" Command="{Binding InterpolateCommand}" CommandParameter="InverseDistance"/>
+                <Button Content="Smooth" Command="{Binding SmoothCommand}"/>
+            </UniformGrid>
+            <Button Content="Delete all picks" Command="{Binding ClearHorizonCommand}"/>
+            <TextBlock Margin="0,8,0,0" Style="{StaticResource Muted}" TextWrapping="Wrap"
+                       Text="In a seismic viewer choose the Pick tool: click successive points (snapped to the event); Shift+click seeds 3D auto-tracking; Ctrl+click tracks along the line; right-click restarts the chain. Draw tool: fault sticks (double-click ends). Ctrl+Z / Ctrl+Y undo/redo."/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

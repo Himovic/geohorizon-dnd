@@ -1,0 +1,45 @@
+<UserControl x:Class="GeoVisionPro.Desktop.Views.AvoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:GeoVisionPro.Desktop.Controls"
+             xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF">
+    <Grid Background="{DynamicResource BackgroundBrush}">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="280"/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <ScrollViewer Background="{DynamicResource PanelBrush}" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="6">
+                <TextBlock Text="Gather analysis" Style="{StaticResource SectionHeader}"/>
+                <ComboBox ItemsSource="{Binding GatherSets}" SelectedItem="{Binding Gathers}" DisplayMemberPath="Name"/>
+                <DockPanel><TextBlock Text="IL / XL" Width="100" VerticalAlignment="Center"/><UniformGrid Columns="2"><TextBox Text="{Binding Inline}"/><TextBox Text="{Binding Crossline}"/></UniformGrid></DockPanel>
+                <TextBlock Text="RMS velocity t(s):v(m/s)" Style="{StaticResource Muted}"/>
+                <TextBox Text="{Binding VelocityFunction}"/>
+                <DockPanel><TextBlock Text="Pick time ms" Width="100" VerticalAlignment="Center"/><TextBox Text="{Binding PickTimeMs}"/></DockPanel>
+                <DockPanel><TextBlock Text="Half window" Width="100" VerticalAlignment="Center"/><TextBox Text="{Binding HalfWindow}"/></DockPanel>
+                <CheckBox Content="Pick trough (else peak)" IsChecked="{Binding PickTrough}"/>
+                <Button Content="Analyse gather" Style="{StaticResource AccentButton}" Command="{Binding AnalyzeCommand}"/>
+                <Button Content="Intercept-gradient crossplot (all gathers)" Command="{Binding CrossplotAllCommand}"/>
+                <TextBlock Text="Two-layer modelling" Style="{StaticResource SectionHeader}"/>
+                <TextBlock Text="Upper: Vp, Vs (m/s), ρ (g/cc)" Style="{StaticResource Muted}"/>
+                <UniformGrid Columns="3"><TextBox Text="{Binding Vp1}"/><TextBox Text="{Binding Vs1}"/><TextBox Text="{Binding Rho1}"/></UniformGrid>
+                <TextBlock Text="Lower: Vp, Vs (m/s), ρ (g/cc)" Style="{StaticResource Muted}"/>
+                <UniformGrid Columns="3"><TextBox Text="{Binding Vp2}"/><TextBox Text="{Binding Vs2}"/><TextBox Text="{Binding Rho2}"/></UniformGrid>
+                <CheckBox Content="Gassmann: lower layer brine → gas (Sw 0.2)" IsChecked="{Binding SubstituteToGas}"/>
+                <DockPanel><TextBlock Text="Lower porosity" Width="100" VerticalAlignment="Center"/><TextBox Text="{Binding Porosity2}"/></DockPanel>
+                <DockPanel><TextBlock Text="Max angle °" Width="100" VerticalAlignment="Center"/><TextBox Text="{Binding MaxAngle}"/></DockPanel>
+                <Button Content="Model R(θ)" Command="{Binding ModelCommand}"/>
+            </StackPanel>
+        </ScrollViewer>
+        <DockPanel Grid.Column="1">
+            <TextBox DockPanel.Dock="Bottom" Height="64" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Result, Mode=OneWay}"/>
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <Grid.RowDefinitions><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                <c:SeismicSectionControl x:Name="GatherView" Grid.RowSpan="2"/>
+                <sp:WpfPlot x:Name="AmpPlot" Grid.Column="1"/>
+                <UniformGrid Grid.Column="1" Grid.Row="1" Columns="2">
+                    <sp:WpfPlot x:Name="ModelPlot"/>
+                    <sp:WpfPlot x:Name="IgPlot"/>
+                </UniformGrid>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,22 @@
+<UserControl x:Class="GeoVisionPro.Desktop.Views.CheckshotView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF">
+    <DockPanel Background="{DynamicResource BackgroundBrush}">
+        <WrapPanel DockPanel.Dock="Top" Background="{DynamicResource SecondaryBackgroundBrush}">
+            <TextBlock Text="Well" VerticalAlignment="Center" Margin="6,0,2,0" Style="{StaticResource Muted}"/>
+            <ComboBox Width="150" ItemsSource="{Binding Wells}" SelectedItem="{Binding Well}" DisplayMemberPath="Name"/>
+            <TextBlock Text="Survey" VerticalAlignment="Center" Margin="6,0,2,0" Style="{StaticResource Muted}"/>
+            <ComboBox Width="220" ItemsSource="{Binding Surveys}" SelectedItem="{Binding Survey}" DisplayMemberPath="Name"/>
+            <Button Content="Import checkshots..." Command="{Binding ImportCommand}"/>
+            <Button Content="Set as active TDR" Command="{Binding SetActiveCommand}"/>
+            <Button Content="Calibrate sonic and store" Style="{StaticResource AccentButton}" Command="{Binding CalibrateAndStoreCommand}"/>
+        </WrapPanel>
+        <TextBox DockPanel.Dock="Bottom" Text="{Binding Report, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" Height="80" FontFamily="{StaticResource MonoFont}"/>
+        <UniformGrid Columns="3">
+            <sp:WpfPlot x:Name="TdPlot"/>
+            <sp:WpfPlot x:Name="VelPlot"/>
+            <sp:WpfPlot x:Name="DriftPlot"/>
+        </UniformGrid>
+    </DockPanel>
+</UserControl>

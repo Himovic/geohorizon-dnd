@@ -1,0 +1,47 @@
+<UserControl x:Class="GeoVisionPro.Desktop.Views.DataManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <TabControl Background="{DynamicResource PanelBrush}">
+        <TabItem Header="Surveys">
+            <DataGrid ItemsSource="{Binding Surveys}" SelectedItem="{Binding Selected}" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                    <DataGridTextColumn Header="Kind" Binding="{Binding Kind}"/>
+                    <DataGridTextColumn Header="Category" Binding="{Binding Category}"/>
+                    <DataGridTextColumn Header="Storage" Binding="{Binding StorageFormat}"/>
+                    <DataGridTextColumn Header="Samples" Binding="{Binding SampleCount}"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding ValidationStatus}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+        <TabItem Header="Wells">
+            <DataGrid ItemsSource="{Binding Wells}" SelectedItem="{Binding Selected}" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                    <DataGridTextColumn Header="X" Binding="{Binding SurfaceX, StringFormat=0.0}"/>
+                    <DataGridTextColumn Header="Y" Binding="{Binding SurfaceY, StringFormat=0.0}"/>
+                    <DataGridTextColumn Header="KB" Binding="{Binding KellyBushing}"/>
+                    <DataGridTextColumn Header="TD" Binding="{Binding TotalDepth, StringFormat=0.0}"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding ValidationStatus}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+        <TabItem Header="Horizons">
+            <DataGrid ItemsSource="{Binding Horizons}" SelectedItem="{Binding Selected}" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                    <DataGridTextColumn Header="Domain" Binding="{Binding Domain}"/>
+                    <DataGridTextColumn Header="Colour" Binding="{Binding Color}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+        <TabItem Header="Faults">
+            <DataGrid ItemsSource="{Binding Faults}" SelectedItem="{Binding Selected}" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                    <DataGridTextColumn Header="Colour" Binding="{Binding Color}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+    </TabControl>
+</UserControl>

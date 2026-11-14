@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>GeoVisionPro.Desktop</RootNamespace>
+    <AssemblyName>GeoVisionPro</AssemblyName>
+    <ApplicationIcon>Assets\geovision.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Description>GeoVision Pro - seismic interpretation, processing and reservoir characterization workstation.</Description>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <NoWarn>$(NoWarn);MVVMTK0045;CA1416</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Dirkster.AvalonDock" />
+    <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" />
+    <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" />
+    <PackageReference Include="ScottPlot.WPF" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeoVisionPro.Infrastructure\GeoVisionPro.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\geovision.png" />
+  </ItemGroup>
+  <!-- Native engines are copied next to the executable when built with CMake (native/build). -->
+  <ItemGroup>
+    <None Include="..\..\native\build\Release\gvnative.dll" Condition="Exists('..\..\native\build\Release\gvnative.dll')" CopyToOutputDirectory="PreserveNewest" Link="gvnative.dll" />
+    <None Include="..\..\native\build\Release\gvvtk.dll" Condition="Exists('..\..\native\build\Release\gvvtk.dll')" CopyToOutputDirectory="PreserveNewest" Link="gvvtk.dll" />
+  </ItemGroup>
+</Project>

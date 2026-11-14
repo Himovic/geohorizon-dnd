@@ -1,0 +1,64 @@
+<UserControl x:Class="GeoVisionPro.Desktop.Views.Scene3DView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:hx="http://helix-toolkit.org/wpf/SharpDX">
+    <Grid Background="{DynamicResource BackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="4"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ScrollViewer Background="{DynamicResource PanelBrush}" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="6">
+                <TextBlock Text="Seismic" Style="{StaticResource SectionHeader}"/>
+                <ComboBox ItemsSource="{Binding Volumes}" SelectedItem="{Binding Volume}" DisplayMemberPath="Name"/>
+                <ComboBox ItemsSource="{Binding ColorMapNames}" SelectedItem="{Binding ColorMapName}"/>
+                <CheckBox Content="Inline" IsChecked="{Binding ShowInline}"/>
+                <Slider x:Name="IlSlider" Value="{Binding Inline, Delay=250}" IsSnapToTickEnabled="True"/>
+                <CheckBox Content="Crossline" IsChecked="{Binding ShowCrossline}"/>
+                <Slider x:Name="XlSlider" Value="{Binding Crossline, Delay=250}" IsSnapToTickEnabled="True"/>
+                <CheckBox Content="Time slice" IsChecked="{Binding ShowTimeSlice}"/>
+                <Slider x:Name="TsSlider" Value="{Binding TimeSample, Delay=250}" IsSnapToTickEnabled="True" TickFrequency="1"/>
+                <TextBlock Text="Vertical exaggeration" Style="{StaticResource Muted}"/>
+                <Slider Minimum="0.5" Maximum="10" Value="{Binding VerticalExaggeration, Delay=400}"/>
+                <CheckBox Content="Orthographic camera" IsChecked="{Binding Orthographic}"/>
+                <TextBlock Text="Volume rendering (slice stack)" Style="{StaticResource SectionHeader}"/>
+                <DockPanel><TextBlock Text="Slices" Width="70" VerticalAlignment="Center"/><TextBox Text="{Binding VolumeSlices}"/></DockPanel>
+                <DockPanel><TextBlock Text="Opacity" Width="70" VerticalAlignment="Center"/><Slider Minimum="0.05" Maximum="1" Value="{Binding VolumeOpacity}"/></DockPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Render volume" Command="{Binding BuildVolumeRenderingCommand}"/>
+                    <Button Content="Remove" Command="{Binding RemoveVolumeRenderingCommand}"/>
+                </StackPanel>
+                <TextBlock Text="Scene objects" Style="{StaticResource SectionHeader}"/>
+                <ItemsControl ItemsSource="{Binding Items}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding Visible}">
+                                <TextBlock><Run Text="{Binding Kind, Mode=OneWay}" Foreground="{DynamicResource MutedTextBrush}"/><Run Text=": "/><Run Text="{Binding Name, Mode=OneWay}"/></TextBlock>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button Content="Zoom extents" Command="{Binding ZoomExtentsCommand}"/>
+                    <Button Content="Screenshot" Click="Screenshot_Click"/>
+                </StackPanel>
+                <TextBlock Text="{Binding Status}" Style="{StaticResource Muted}" Margin="0,6"/>
+                <TextBlock Style="{StaticResource Muted}" Text="Rotate: right drag. Pan: middle drag (or Shift+right). Zoom: wheel."/>
+            </StackPanel>
+        </ScrollViewer>
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
+        <hx:Viewport3DX x:Name="Viewport" Grid.Column="2" BackgroundColor="#10131A" ShowCoordinateSystem="True" ShowViewCube="True"
+                        EnableSwapChainRendering="True" FXAALevel="Low" ZoomExtentsWhenLoaded="True">
+            <hx:Viewport3DX.InputBindings>
+                <MouseBinding Gesture="RightClick" Command="hx:ViewportCommands.Rotate"/>
+                <MouseBinding Gesture="MiddleClick" Command="hx:ViewportCommands.Pan"/>
+                <MouseBinding Gesture="Shift+RightClick" Command="hx:ViewportCommands.Pan"/>
+            </hx:Viewport3DX.InputBindings>
+            <hx:AmbientLight3D Color="#505560"/>
+            <hx:DirectionalLight3D Direction="-1,-1,-1" Color="#C0C0C0"/>
+            <hx:DirectionalLight3D Direction="1,-0.5,1" Color="#606060"/>
+            <hx:GroupModel3D x:Name="SceneRoot"/>
+        </hx:Viewport3DX>
+    </Grid>
+</UserControl>

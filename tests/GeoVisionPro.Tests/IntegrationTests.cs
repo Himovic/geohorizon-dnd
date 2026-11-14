@@ -232,7 +232,7 @@ public class ProjectPersistenceTests
         session.Close();
         await session.OpenAsync(tmp.File("demo.gvp"));
         Assert.Equal(n, session.Seismic.Count);
-        Assert.Equal(1, session.WellTies.Count);
+        Assert.Single(session.WellTies);
         var reopened = session.GetVolume(session.Seismic.First(s => s.Name == "AI"));
         Assert.Equal(inverted, reopened.ReadTrace(il, xl));
 

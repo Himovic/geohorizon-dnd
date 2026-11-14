@@ -14,7 +14,7 @@ public static partial class NativeCompute
 
     /// <summary>True when the native library is loaded (set GEOVISION_DISABLE_NATIVE=1 to force managed code).</summary>
     public static bool IsAvailable => _available.Value;
-    public static string Status => IsAvailable ? $"Native engine v{gv_version() / 10000.0:0.00}, OpenMP {(gv_has_openmp() == 1 ? "on" : "off")}" : "Managed fallback (native engine not loaded)";
+    public static string Status => IsAvailable ? $"Native engine v{gv_version() / 10000}.{gv_version() / 100 % 100}.{gv_version() % 100}, OpenMP {(gv_has_openmp() == 1 ? "on" : "off")}" : "Managed fallback (native engine not loaded)";
 
     private static bool Probe()
     {

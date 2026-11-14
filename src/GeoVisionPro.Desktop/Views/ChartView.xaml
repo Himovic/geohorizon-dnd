@@ -1,0 +1,12 @@
+<UserControl x:Class="GeoVisionPro.Desktop.Views.ChartView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF">
+    <DockPanel Background="{DynamicResource BackgroundBrush}">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Background="{DynamicResource SecondaryBackgroundBrush}">
+            <Button Content="Export PNG" Click="Export_Click"/>
+            <Button Content="Export CSV" Click="Csv_Click"/>
+        </StackPanel>
+        <sp:WpfPlot x:Name="Plot"/>
+    </DockPanel>
+</UserControl>
